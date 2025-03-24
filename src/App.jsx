@@ -5,10 +5,11 @@ import Home from "./Components/Home";
 import Navbar from "./Components/Navbar";
 import Login from "./Components/Login";
 import Profile from "./Components/Profile";
-import PropertyForm from "./Components/PropertyForm";
+import PropertyForm from "./Components/Propertyform";
 import EditProperty from "./Components/EditProperty";
 import Search from "./Components/Search";
 import About from "./Components/About";
+import NearMe from "./Components/Nearyou";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/edit-property/:id" element={<EditProperty/>} />
                 <Route path="/search" element={<Search/>} />
                 <Route path="/about" element={<About/>} />
+                <Route path="/near-you" element={<NearMe/>} />
             </Routes>
         </BrowserRouter>
     );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { getDatabase, ref, get } from 'firebase/database'
+import { getDatabase, ref, onValue } from 'firebase/database'
+import Footer from './Footer'
 
 function SearchPage() {
   const [properties, setProperties] = useState([])
@@ -9,32 +10,27 @@ function SearchPage() {
     type: '',
     minPrice: '',
     maxPrice: '',
-    amenities: []
+    amenities: [],
+    status: '' // 🔥 Status filter added
   })
 
   useEffect(() => {
-    const fetchProperties = async () => {
-      const db = getDatabase()
-      const propertiesRef = ref(db, 'properties')
+    const db = getDatabase()
+    const propertiesRef = ref(db, 'properties')
 
-      try {
-        const snapshot = await get(propertiesRef)
-        if (snapshot.exists()) {
-          const data = snapshot.val()
-          const propertiesArray = Object.keys(data).map(key => ({
-            id: key,
-            ...data[key]
-          }))
-          setProperties(propertiesArray)
-          setFilteredProperties(propertiesArray) // Default: Show all
-        }
-      } catch (error) {
-        console.error('Error fetching properties:', error)
+    // 🔥 Live Update Listener
+    onValue(propertiesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val()
+        const propertiesArray = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }))
+        setProperties(propertiesArray)
+        setFilteredProperties(propertiesArray) // Default: Show all
       }
-    }
-
-    fetchProperties()
-  }, [])
+    })
+  }, []) // 🔥 No dependency array to keep listener active
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -53,17 +49,20 @@ function SearchPage() {
 
   const filterProperties = () => {
     let filtered = properties.filter(property => {
-      return (
-        (searchFilters.location === '' || property.location.toLowerCase().includes(searchFilters.location.toLowerCase())) &&
-        (searchFilters.type === '' || property.type === searchFilters.type) &&
-        (searchFilters.minPrice === '' || property.price >= parseInt(searchFilters.minPrice)) &&
-        (searchFilters.maxPrice === '' || property.price <= parseInt(searchFilters.maxPrice)) &&
-        (searchFilters.amenities.length === 0 || searchFilters.amenities.every(a => property.amenities.includes(a)))
-      )
+        return (
+            (searchFilters.location === '' || property.location.toLowerCase().includes(searchFilters.location.toLowerCase())) &&
+            (searchFilters.type === '' || property.type === searchFilters.type) &&
+            (searchFilters.minPrice === '' || property.price >= parseInt(searchFilters.minPrice)) &&
+            (searchFilters.maxPrice === '' || property.price <= parseInt(searchFilters.maxPrice)) &&
+            (searchFilters.amenities.length === 0 || searchFilters.amenities.every(a => property.amenities.includes(a))) &&
+            (searchFilters.status === '' || 
+                (searchFilters.status.toLowerCase() === 'available' && property.status.toLowerCase() !== 'sold') ||
+                (searchFilters.status.toLowerCase() === 'sold' && property.status.toLowerCase() === 'sold'))
+        )
     })
 
     setFilteredProperties(filtered)
-  }
+}
 
   return (
     <div className="search-page">
@@ -104,6 +103,13 @@ function SearchPage() {
           placeholder="Max Price"
         />
 
+        {/* 🔥 Status Filter */}
+        <select name="status" value={searchFilters.status} onChange={handleInputChange}>
+          <option value="">All</option>
+          <option value="available">Available</option>
+          <option value="sold">Sold</option>
+        </select>
+
         {/* Amenities */}
         <div className="amenities">
           {['Parking', 'Swimming Pool', 'Garden', 'Gym', 'Security', 'Power Backup', 'Lift', 'Club House', 'Kids Play Area'].map(amenity => (
@@ -127,18 +133,20 @@ function SearchPage() {
         {filteredProperties.length > 0 ? (
           filteredProperties.map(property => (
             <div key={property.id} className="property-card">
-              <img src={property.images[0] || 'https://via.placeholder.com/150'} alt={property.title} />
+              <img src={property.images?.[0] || 'https://via.placeholder.com/150'} alt={property.title} />
               <h3>{property.title}</h3>
               <p><strong>Location:</strong> {property.location}</p>
               <p><strong>Type:</strong> {property.type}</p>
               <p><strong>Price:</strong> ₹{property.price}</p>
-              <p><strong>Amenities:</strong> {property.amenities.join(', ')}</p>
+              <p><strong>Status:</strong> {property.status === "sold" ? "sold" : "✅ Available"}</p>
+              <p><strong>Amenities:</strong> {property.amenities?.join(', ') || 'None'}</p>
             </div>
           ))
         ) : (
           <p>No properties found matching your criteria.</p>
         )}
       </div>
+      <Footer/>
     </div>
   )
 }

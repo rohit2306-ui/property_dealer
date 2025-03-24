@@ -9,10 +9,15 @@ function Home() {
   return (
     <div className='home'>
         {/* <h1>Welcome to the property world</h1> */}
+        <h1>Welcome to the new state world</h1>
         <img src={poster} alt="" />
+       
+
+
         <div className="firstsection">
             <div className="fsec-container">
                 <img src={fsec} alt="Apartment building" />
+                
                 <div className="fsec-content">
                     <h2>We Provide Quality Flats</h2>
                     <p>Discover your dream home with our extensive collection of modern, well-maintained flats. We offer comfortable living spaces with premium amenities, strategic locations, and competitive prices to match your lifestyle needs.</p>
