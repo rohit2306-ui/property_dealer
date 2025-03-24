@@ -1,8 +1,8 @@
 import React from 'react'
-import poster from '../images/main_poster.jpg'
-import fsec from '../images/fsphoto1.jpg'
-import fsec2 from '../images/fsphoto2.jpg'
-import fsec3 from '../images/tsphoto3.jpg'
+import poster from '../Images/main_poster.jpg'
+import fsec from '../Images/fsphoto1.jpg'
+import fsec2 from '../Images/fsphoto2.jpg'
+import fsec3 from '../Images/tsphoto3.jpg'
 import Footer from './Footer'
 import Login from './Login'
 function Home() {
