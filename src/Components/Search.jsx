@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import { getDatabase, ref, onValue } from 'firebase/database'
+import { useNavigate } from 'react-router-dom'  // Import useNavigate
 import Footer from './Footer'
 
 function SearchPage() {
   const [properties, setProperties] = useState([])
   const [filteredProperties, setFilteredProperties] = useState([])
+  const navigate = useNavigate()  // Initialize navigation
+
   const [searchFilters, setSearchFilters] = useState({
     location: '',
     type: '',
     minPrice: '',
     maxPrice: '',
     amenities: [],
-    status: '' // 🔥 Status filter added
+    status: ''
   })
 
   useEffect(() => {
     const db = getDatabase()
     const propertiesRef = ref(db, 'properties')
 
-    // 🔥 Live Update Listener
     onValue(propertiesRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val()
@@ -27,10 +29,10 @@ function SearchPage() {
           ...data[key]
         }))
         setProperties(propertiesArray)
-        setFilteredProperties(propertiesArray) // Default: Show all
+        setFilteredProperties(propertiesArray)
       }
     })
-  }, []) // 🔥 No dependency array to keep listener active
+  }, [])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -49,20 +51,20 @@ function SearchPage() {
 
   const filterProperties = () => {
     let filtered = properties.filter(property => {
-        return (
-            (searchFilters.location === '' || property.location.toLowerCase().includes(searchFilters.location.toLowerCase())) &&
-            (searchFilters.type === '' || property.type === searchFilters.type) &&
-            (searchFilters.minPrice === '' || property.price >= parseInt(searchFilters.minPrice)) &&
-            (searchFilters.maxPrice === '' || property.price <= parseInt(searchFilters.maxPrice)) &&
-            (searchFilters.amenities.length === 0 || searchFilters.amenities.every(a => property.amenities.includes(a))) &&
-            (searchFilters.status === '' || 
-                (searchFilters.status.toLowerCase() === 'available' && property.status.toLowerCase() !== 'sold') ||
-                (searchFilters.status.toLowerCase() === 'sold' && property.status.toLowerCase() === 'sold'))
-        )
+      return (
+        (searchFilters.location === '' || property.location.toLowerCase().includes(searchFilters.location.toLowerCase())) &&
+        (searchFilters.type === '' || property.type === searchFilters.type) &&
+        (searchFilters.minPrice === '' || property.price >= parseInt(searchFilters.minPrice)) &&
+        (searchFilters.maxPrice === '' || property.price <= parseInt(searchFilters.maxPrice)) &&
+        (searchFilters.amenities.length === 0 || searchFilters.amenities.every(a => property.amenities.includes(a))) &&
+        (searchFilters.status === '' || 
+          (searchFilters.status.toLowerCase() === 'available' && property.status.toLowerCase() !== 'sold') ||
+          (searchFilters.status.toLowerCase() === 'sold' && property.status.toLowerCase() === 'sold'))
+      )
     })
 
     setFilteredProperties(filtered)
-}
+  }
 
   return (
     <div className="search-page">
@@ -70,13 +72,7 @@ function SearchPage() {
 
       {/* Search Filters */}
       <div className="search-filters">
-        <input
-          type="text"
-          name="location"
-          value={searchFilters.location}
-          onChange={handleInputChange}
-          placeholder="Enter location"
-        />
+        <input type="text" name="location" value={searchFilters.location} onChange={handleInputChange} placeholder="Enter location" />
 
         <select name="type" value={searchFilters.type} onChange={handleInputChange}>
           <option value="">All Types</option>
@@ -87,30 +83,16 @@ function SearchPage() {
           <option value="commercial">Commercial</option>
         </select>
 
-        <input
-          type="number"
-          name="minPrice"
-          value={searchFilters.minPrice}
-          onChange={handleInputChange}
-          placeholder="Min Price"
-        />
+        <input type="number" name="minPrice" value={searchFilters.minPrice} onChange={handleInputChange} placeholder="Min Price" />
 
-        <input
-          type="number"
-          name="maxPrice"
-          value={searchFilters.maxPrice}
-          onChange={handleInputChange}
-          placeholder="Max Price"
-        />
+        <input type="number" name="maxPrice" value={searchFilters.maxPrice} onChange={handleInputChange} placeholder="Max Price" />
 
-        {/* 🔥 Status Filter */}
         <select name="status" value={searchFilters.status} onChange={handleInputChange}>
           <option value="">All</option>
           <option value="available">Available</option>
           <option value="sold">Sold</option>
         </select>
 
-        {/* Amenities */}
         <div className="amenities">
           {['Parking', 'Swimming Pool', 'Garden', 'Gym', 'Security', 'Power Backup', 'Lift', 'Club House', 'Kids Play Area'].map(amenity => (
             <label key={amenity}>
@@ -140,13 +122,16 @@ function SearchPage() {
               <p><strong>Price:</strong> ₹{property.price}</p>
               <p><strong>Status:</strong> {property.status === "sold" ? "sold" : "✅ Available"}</p>
               <p><strong>Amenities:</strong> {property.amenities?.join(', ') || 'None'}</p>
+
+              {/* Buy Property Button */}
+              <button className="buy-btn" onClick={() => navigate(`/property/${property.id}`)}>Buy Property</button>
             </div>
           ))
         ) : (
           <p>No properties found matching your criteria.</p>
         )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   )
 }

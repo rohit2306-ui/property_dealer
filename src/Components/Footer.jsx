@@ -15,15 +15,15 @@ function Footer() {
             <li><a href="/">Home</a></li>
             <li><a href="/search">Properties</a></li>
             <li><a href="/about">Services</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/about">Contact</a></li>
           </ul>
         </div>
 
         <div className="footer-section">
           <h3>Contact Info</h3>
-          <p>📍 123 Real Estate Avenue</p>
-          <p>📞 (555) 123-4567</p>
-          <p>✉️ info@realestate.com</p>
+          <p>📍 My state.com Agra UP 282007</p>
+          <p>📞 +91 9368646810</p>
+          <p>✉️ Mystate2025@gmail.com</p>
         </div>
 
         <div className="footer-section">
@@ -37,7 +37,7 @@ function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2024 Real Estate Company. All rights reserved.</p>
+        <p>&copy; 2024 Real Estate mystate.com. All rights reserved.</p>
       </div>
     </div>
   )

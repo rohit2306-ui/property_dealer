@@ -56,17 +56,41 @@ function Profile() {
     }
   }, [])
 
-  const deleteProperty = (propertyId) => {
+  // ✅ DELETE PROPERTY FUNCTION WITH IMAGE DELETION FROM VERCEL BLOB
+  const deleteProperty = async (propertyId, imageUrls) => {
     if (window.confirm("Are you sure you want to delete this property?")) {
-      remove(ref(realtimeDB, `properties/${propertyId}`))
-        .then(() => {
-          alert("Property deleted successfully!")
-          setProperties(properties.filter(property => property.id !== propertyId))
-        })
-        .catch(error => console.error("Error deleting property:", error))
+      try {
+        // 🔹 Vercel Blob Delete API Call (if images exist)
+        if (imageUrls && Array.isArray(imageUrls)) {
+          await Promise.all(
+            imageUrls.map(async (imageUrl) => {
+              try {
+                await fetch(imageUrl, {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN}`,
+                    'Content-Type': 'application/json'
+                  }
+                })
+              } catch (err) {
+                console.error(`Error deleting image from Vercel: ${imageUrl}`, err)
+              }
+            })
+          )
+        }
+  
+        // 🔹 Firebase se property delete karna
+        await remove(ref(realtimeDB, `properties/${propertyId}`))
+  
+        alert("Property deleted succesfull")
+        setProperties(properties.filter(property => property.id !== propertyId))
+      } catch (error) {
+        console.error("Error deleting property:", error)
+      }
     }
   }
-
+  
+  // ✅ MARK AS SOLD FUNCTION
   const markAsSold = (propertyId) => {
     update(ref(realtimeDB, `properties/${propertyId}`), { status: "Sold" })
       .then(() => {
@@ -107,7 +131,17 @@ function Profile() {
           <div className='card'>
             {properties.map((property) => (
               <div className='cardin' key={property.id}>
-                <img src={property.images} alt="Property" />
+                {/* ✅ MULTIPLE IMAGE DISPLAY */}
+                <div className="image-container">
+                  {property.images && Array.isArray(property.images) ? (
+                    property.images.map((imageUrl, index) => (
+                      <img key={index} src={imageUrl} alt={`Property ${index}`} className="property-image" />
+                    ))
+                  ) : (
+                    <img src={property.images} alt="Property" className="property-image" />
+                  )}
+                </div>
+
                 <h4>{property.title}</h4>
                 <p>Type: <b>{property.type}</b></p>
                 <p>Location: <b>{property.location}</b></p>
@@ -118,7 +152,7 @@ function Profile() {
 
                 {/* Edit, Delete, and Mark as Sold Buttons */}
                 <button className="edit-btn" onClick={() => navigate(`/edit-property/${property.id}`)}>Edit</button>
-                <button className="delete-btn" onClick={() => deleteProperty(property.id)}>Delete</button>
+                <button className="delete-btn" onClick={() => deleteProperty(property.id, property.images)}>Delete</button>
                 {property.status !== "Sold" && (
                   <button className="sold-btn" onClick={() => markAsSold(property.id)}>Mark as Sold</button>
                 )}

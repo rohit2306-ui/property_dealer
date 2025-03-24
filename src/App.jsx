@@ -10,6 +10,7 @@ import EditProperty from "./Components/EditProperty";
 import Search from "./Components/Search";
 import About from "./Components/About";
 import NearMe from "./Components/Nearyou";
+import PropertyDetails from "./Components/PropertyDetails";
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/search" element={<Search/>} />
                 <Route path="/about" element={<About/>} />
                 <Route path="/near-you" element={<NearMe/>} />
+                <Route path="/property/:propertyId" element={<PropertyDetails/>} />
             </Routes>
         </BrowserRouter>
     );
