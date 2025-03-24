@@ -852,25 +852,6 @@
     }
 
   }
-  .property-details{
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .property-images{
-      height: auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      img{
-        width: 100%;
-        object-fit: cover;
-        margin: 10px 10px;
-        border-radius: 10px;
-      }
-    }
-    
-  }
 }
 /* Property Form Styles */
 .property-form-container {
@@ -1408,3 +1389,25 @@ input, select{
   }
 }
 
+@media (max-width:637px) {
+  .property-details{
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .property-images{
+      height: auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      img{
+        width: 80%;
+        height: 270px;
+        object-fit: cover;
+        margin: 10px 10px;
+        border-radius: 10px;
+      }
+    }
+    
+  }
+}
