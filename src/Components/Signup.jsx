@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth, googleProvider, createUserWithEmailAndPassword, signInWithPopup } from "../firebase";
-import google from '../images/Google__G__logo.jpg'
+import google from '../Images/Google__G__logo.jpg'
 const SignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
