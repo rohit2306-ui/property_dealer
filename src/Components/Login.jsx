@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth, googleProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "../firebase";
-import google from '../images/Google__G__logo.jpg'
+import google from '../Images/Google__G__logo.jpg'
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
