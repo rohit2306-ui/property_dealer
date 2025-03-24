@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ref, get, update } from 'firebase/database'
 import { realtimeDB } from '../firebase'
+import Footer from './Footer'
 
 function EditProperty() {
   const { id } = useParams()  // Get property ID from URL
@@ -44,6 +45,7 @@ function EditProperty() {
   }
 
   return (
+    <>
     <div className="edit-property-container">
       <h2>Edit Property</h2>
       <form onSubmit={handleSubmit}>
@@ -77,6 +79,7 @@ function EditProperty() {
         <button type="submit">Update Property</button>
       </form>
     </div>
+    <Footer/></>
   )
 }
 
