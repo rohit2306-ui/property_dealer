@@ -120,7 +120,7 @@ function SearchPage() {
               <p><strong>Location:</strong> {property.location}</p>
               <p><strong>Type:</strong> {property.type}</p>
               <p><strong>Price:</strong> ₹{property.price}</p>
-              <p><strong>Status:</strong> {property.status === "sold" ? "sold" : "✅ Available"}</p>
+              {/* <p><strong>Status:</strong> {property.status === "sold" ? "sold" : "✅ Available"}</p> */}
               <p><strong>Amenities:</strong> {property.amenities?.join(', ') || 'None'}</p>
 
               {/* Buy Property Button */}

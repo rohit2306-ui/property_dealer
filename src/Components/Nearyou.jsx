@@ -5,17 +5,26 @@ import Footer from './Footer';
 
 function NearMe() {
   const [location, setLocation] = useState(null);
+  const [stateName, setStateName] = useState('');
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // ✅ Step 1: User ki Current Location Fetch Karna
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
-          fetchProperties(latitude, longitude); // ✅ Step 2: Properties Fetch
+
+          // ✅ Free OpenStreetMap API se state detect karenge
+          const state = await fetchStateFromCoords(latitude, longitude);
+          if (state) {
+            setStateName(state);
+            fetchProperties(state); // ✅ Step 3: Fetch Properties for that state
+          } else {
+            console.error('Failed to get state name');
+            setLoading(false);
+          }
         },
         (error) => {
           console.error('Error fetching location:', error);
@@ -28,49 +37,54 @@ function NearMe() {
     }
   }, []);
 
-  // ✅ Step 2: Fetch Properties from Firestore
-  const fetchProperties = async (lat, lng) => {
-    const propertiesRef = collection(db, 'properties');
-    const querySnapshot = await getDocs(propertiesRef);
+  // ✅ OpenStreetMap (Nominatim API) se state detect karna (FREE)
+  const fetchStateFromCoords = async (lat, lng) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const data = await response.json();
 
-    let fetchedProperties = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.latitude && data.longitude) {
-        // ✅ Step 3: Filter Nearby Properties
-        const distance = getDistance(lat, lng, data.latitude, data.longitude);
-        if (distance <= 10) { // 🔥 10 KM range ke andar wali properties dikhayenge
-          fetchedProperties.push({ id: doc.id, ...data, distance });
-        }
+      if (data.address && data.address.state) {
+        return data.address.state; // ✅ Exact State Name
       }
-    });
-    console.log(fetchProperties);
-    fetchedProperties.sort((a, b) => a.distance - b.distance); // Nearest properties first
-    setProperties(fetchedProperties);
-    setLoading(false);
+      return '';
+    } catch (error) {
+      console.error('Error fetching state:', error);
+      return '';
+    }
   };
 
-  // ✅ Step 3: Haversine Formula for Distance Calculation
-  const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of Earth in KM
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-    const a = 
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in KM
+  // ✅ Step 3: Fetch Properties for the User's State from Firestore
+  const fetchProperties = async (state) => {
+    try {
+      const propertiesRef = collection(db, 'properties');
+      const querySnapshot = await getDocs(propertiesRef);
+
+      let fetchedProperties = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.state === state) { // 🔥 Filter by state
+          fetchedProperties.push({ id: doc.id, ...data });
+        }
+      });
+
+      setProperties(fetchedProperties);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="near-me-container">
-      <h2>Properties Near You</h2>
-      
+      <h2>Properties in {stateName || 'Your State'}</h2>
+
       {loading ? <p>Loading properties...</p> : null}
 
       {!loading && properties.length === 0 ? (
-        <p>No properties found near your location.</p>
+        <p>No properties found in your state.</p>
       ) : (
         <div className="properties-grid">
           {properties.map((property) => (
@@ -80,15 +94,14 @@ function NearMe() {
                 alt={property.title} 
               />
               <h4>{property.title}</h4>
-              <p>Location: {property.location}</p>
+              <p>Location: {property.state}</p>
               <p>Price: ₹{property.price}</p>
               <p>Type: {property.type}</p>
-              <p>Distance: {property.distance.toFixed(2)} KM</p>
             </div>
           ))}
         </div>
       )}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

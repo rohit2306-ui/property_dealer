@@ -11,13 +11,14 @@ import Search from "./Components/Search";
 import About from "./Components/About";
 import NearMe from "./Components/Nearyou";
 import PropertyDetails from "./Components/PropertyDetails";
+import Homes from "./Components/Homes";
 
 function App() {
     return (
         <BrowserRouter>
             <Navbar />
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/profile" element={<Profile/>} />

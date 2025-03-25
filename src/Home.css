@@ -1,0 +1,130 @@
+.home {
+    font-family: "Poppins", sans-serif;
+    background: #f5f5f5;
+  }
+  
+  /* 🔥 Hero Section */
+  .hero-section {
+    position: relative;
+    text-align: center;
+    color: white;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    position: absolute;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+  
+  .hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .cta-button {
+    padding: 12px 24px;
+    background: #ff7b00;
+    color: white;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    transition: 0.3s;
+  }
+  
+  .cta-button:hover {
+    background: #e66a00;
+  }
+  
+  /* 🔥 Features Section */
+  .features {
+    display: flex;
+    justify-content: space-around;
+    padding: 50px;
+    background: white;
+  }
+  
+  .feature {
+    text-align: center;
+    max-width: 300px;
+  }
+  
+  .feature img {
+    width: 60px;
+    margin-bottom: 10px;
+  }
+  
+  .feature h3 {
+    font-size: 1.5rem;
+  }
+  
+  /* 🔥 Property Sections */
+  .firstsection,
+  .secondsection,
+  .thirdsection {
+    text-align: center;
+    padding: 50px;
+    background: #ffffff;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+  }
+  
+  .firstsection:hover,
+  .secondsection:hover,
+  .thirdsection:hover {
+    transform: scale(1.02);
+  }
+  
+  .fsec-container,
+  .fsec2-container,
+  .fsec3-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fsec-container img,
+  .fsec2-container img,
+  .fsec3-container img {
+    width: 40%;
+    border-radius: 10px;
+  }
+  
+  .fsec-content,
+  .fsec2-content,
+  .fsec3-content {
+    max-width: 500px;
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .view-button {
+    padding: 12px 20px;
+    background: #ff7b00;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .view-button:hover {
+    background: #e66a00;
+  }
+  

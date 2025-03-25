@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { ref as dbRef, set, getDatabase } from 'firebase/database';
-import { put } from '@vercel/blob'; // ✅ Vercel Blob for Image Upload
+import { put } from '@vercel/blob';
 import { useNavigate } from 'react-router-dom';
 
 function Propertyform() {
+  const indianStates = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
+    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", 
+    "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", 
+    "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
+    "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", 
+    "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", 
+    "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep", 
+    "Delhi", "Puducherry", "Ladakh", "Jammu and Kashmir"
+  ];
+
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -16,8 +27,8 @@ function Propertyform() {
     description: '',
     amenities: [],
     images: [],
-    contactNumber: '',        // 📞 Contact Number Added
-    altContactNumber: '',     // 📞 Alternate Number Added
+    contactNumber: '',
+    altContactNumber: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -100,8 +111,6 @@ function Propertyform() {
         userEmail: auth.currentUser.email,
         createdAt: new Date().toISOString(),
         status: 'Available',
-        contactNumber: formData.contactNumber,  // ✅ Store Contact Number
-        altContactNumber: formData.altContactNumber,  // ✅ Store Alternate Number
       };
 
       const propertyRef = dbRef(database, 'properties/' + Date.now());
@@ -123,7 +132,7 @@ function Propertyform() {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Property Title</label>
-          <input type="text" name="title" value={formData.title} onChange={handleInputChange} placeholder="Enter property title" required />
+          <input type="text" name="title" value={formData.title} onChange={handleInputChange} required />
         </div>
 
         <div className="form-group">
@@ -139,42 +148,47 @@ function Propertyform() {
 
         <div className="form-group">
           <label>Price (₹)</label>
-          <input type="number" name="price" value={formData.price} onChange={handleInputChange} placeholder="Enter property price" required />
+          <input type="number" name="price" value={formData.price} onChange={handleInputChange} required />
         </div>
-        <div className="form-group">
-  <label>Bedrooms</label>
-  <input type="number" name="bedrooms" value={formData.bedrooms} onChange={handleInputChange} placeholder="Enter number of bedrooms" required />
-</div>
 
-<div className="form-group">
-  <label>Bathrooms</label>
-  <input type="number" name="bathrooms" value={formData.bathrooms} onChange={handleInputChange} placeholder="Enter number of bathrooms" required />
-</div>
+        <div className="form-group">
+          <label>Bedrooms</label>
+          <input type="number" name="bedrooms" value={formData.bedrooms} onChange={handleInputChange} required />
+        </div>
+
+        <div className="form-group">
+          <label>Bathrooms</label>
+          <input type="number" name="bathrooms" value={formData.bathrooms} onChange={handleInputChange} required />
+        </div>
 
         <div className="form-group">
           <label>Contact Number</label>
-          <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} placeholder="Enter your contact number" required />
+          <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleInputChange} required />
         </div>
 
         <div className="form-group">
           <label>Alternate Contact Number</label>
-          <input type="tel" name="altContactNumber" value={formData.altContactNumber} onChange={handleInputChange} placeholder="Enter alternate contact number (optional)" />
+          <input type="tel" name="altContactNumber" value={formData.altContactNumber} onChange={handleInputChange} />
         </div>
 
         <div className="form-group">
-          <label>Location</label>
-          <input type="text" name="location" value={formData.location} onChange={handleInputChange} placeholder="Property location" required />
+          <label>Location (State)</label>
+          <select name="location" value={formData.location} onChange={handleInputChange} required>
+            <option value="">Select State</option>
+            {indianStates.map((state, index) => (
+              <option key={index} value={state}>{state}</option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group">
           <label>Description</label>
-          <textarea name="description" value={formData.description} onChange={handleInputChange} placeholder="Describe your property" required rows="4" />
+          <textarea name="description" value={formData.description} onChange={handleInputChange} required rows="4" />
         </div>
 
         <div className="form-group">
           <label>Upload Property Images</label>
           <input type="file" multiple accept="image/*" onChange={handleImageUpload} />
-          <small>You can select multiple images</small>
         </div>
 
         <div className="form-group agreement">

@@ -65,7 +65,9 @@ const Login = () => {
                 <button type="submit">Login</button>
                 <p>Don't have an account? <button onClick={handleRegister}>Register</button></p>
             </form>
+           
             <br />
+            {/* <h1>continue with</h1> */}
             <button onClick={handleGoogleLogin}><img style={{height:40}} src={google} alt="Google" /></button>
             <br />
             {/* <p>Don't have an account? <button onClick={handleRegister}>Register</button></p> */}

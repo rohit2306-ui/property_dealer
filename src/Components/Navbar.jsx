@@ -38,9 +38,9 @@ function Navbar() {
 
   return (
     <div className='nav'>
-        <Link to="/"><h2>Mystate.com</h2></Link>
+        <Link to="/"><h2>Mystate.homes</h2></Link>
         <Link to="/">Home</Link>
-        <Link to="/near-you">Near you</Link>
+        {/* <Link to="/near-you">Near you</Link> */}
         
         <Link className='search' to="/search"><button>Search</button></Link>
         <Link to="/about">About</Link>
