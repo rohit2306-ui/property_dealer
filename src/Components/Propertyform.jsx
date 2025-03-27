@@ -4,7 +4,7 @@ import { ref as dbRef, set, getDatabase } from 'firebase/database';
 import { put } from '@vercel/blob';
 import { useNavigate } from 'react-router-dom';
 
-function Propertyform() {
+function PropertyForm() {
   const indianStates = [
     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
     "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", 
@@ -15,6 +15,8 @@ function Propertyform() {
     "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep", 
     "Delhi", "Puducherry", "Ladakh", "Jammu and Kashmir"
   ];
+
+  const amenitiesList = ["Parking", "Swimming Pool", "Gym", "Garden", "Security", "Lift"];
 
   const [formData, setFormData] = useState({
     title: '',
@@ -36,6 +38,7 @@ function Propertyform() {
   const navigate = useNavigate();
   const database = getDatabase();
 
+  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -44,6 +47,7 @@ function Propertyform() {
     }));
   };
 
+  // Handle checkbox change for amenities
   const handleAmenitiesChange = (e) => {
     const { checked, value } = e.target;
     setFormData((prev) => ({
@@ -54,6 +58,7 @@ function Propertyform() {
     }));
   };
 
+  // Handle image upload
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -89,6 +94,7 @@ function Propertyform() {
     }
   };
 
+  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!auth.currentUser) {
@@ -138,6 +144,7 @@ function Propertyform() {
         <div className="form-group">
           <label>Property Type</label>
           <select name="type" value={formData.type} onChange={handleInputChange}>
+            <option value="">Select Type</option>
             <option value="apartment">Apartment</option>
             <option value="house">House</option>
             <option value="villa">Villa</option>
@@ -182,6 +189,23 @@ function Propertyform() {
         </div>
 
         <div className="form-group">
+          <label>Amenities</label>
+          <div className="amenities-list">
+            {amenitiesList.map((amenity) => (
+              <div key={amenity}>
+                <input
+                  type="checkbox"
+                  value={amenity}
+                  checked={formData.amenities.includes(amenity)}
+                  onChange={handleAmenitiesChange}
+                />
+                <label>{amenity}</label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="form-group">
           <label>Description</label>
           <textarea name="description" value={formData.description} onChange={handleInputChange} required rows="4" />
         </div>
@@ -204,4 +228,4 @@ function Propertyform() {
   );
 }
 
-export default Propertyform;
+export default PropertyForm;

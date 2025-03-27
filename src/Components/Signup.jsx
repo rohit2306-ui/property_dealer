@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import { auth, googleProvider, createUserWithEmailAndPassword, signInWithPopup } from "../firebase";
-import google from '../Images/Google__G__logo.jpg'
+import google from '../Images/Google__G__logo.jpg';
+
 const SignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
 
     // Email & Password Sign-Up
     const handleRegister = async (e) => {
         e.preventDefault();
+        
+        if (password !== confirmPassword) {
+            setError("Passwords do not match!");
+            return;
+        }
+
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             alert("Account Created Successfully!");
@@ -29,8 +37,8 @@ const SignUp = () => {
 
     return (
         <div className="signup">
-            <div >
-                <h2 style={{textAlign: 'center'}}>Sign Up</h2>
+            <div>
+                <h2 style={{ textAlign: 'center' }}>Sign Up</h2>
                 {error && <p className="text-red-500 text-sm text-center">{error}</p>}
                 <form onSubmit={handleRegister} className="space-y-4">
                     <input 
@@ -49,19 +57,25 @@ const SignUp = () => {
                         required 
                         className="w-full px-4 py-2 border rounded-lg"
                     />
+                    <input 
+                        type="password" 
+                        placeholder="Confirm Password" 
+                        value={confirmPassword} 
+                        onChange={(e) => setConfirmPassword(e.target.value)} 
+                        required 
+                        className="w-full px-4 py-2 border rounded-lg"
+                    />
                     <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
                         Register
                     </button>
                 </form>
-                <h3 style={{textAlign: 'center'}}>continue with</h3>
+                <h3 style={{ textAlign: 'center' }}>Continue with</h3>
                 <button 
                     onClick={handleGoogleSignUp} 
                     className="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
                 >
-                   <img src={google} alt="Google" />
-                    
+                   <img src={google} alt="Google" style={{ height: 40 }} />
                 </button>
-                
             </div>
         </div>
     );

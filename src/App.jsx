@@ -28,6 +28,7 @@ function App() {
                 <Route path="/about" element={<About/>} />
                 <Route path="/near-you" element={<NearMe/>} />
                 <Route path="/property/:propertyId" element={<PropertyDetails/>} />
+                <Route path="/signup" element={<SignUp/>} />
             </Routes>
         </BrowserRouter>
     );
